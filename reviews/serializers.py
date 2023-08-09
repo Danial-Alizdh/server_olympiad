@@ -1,0 +1,44 @@
+from rest_framework_json_api import serializers
+from .models import *
+
+
+class NewsSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = News
+        fields = ('id', 'title', 'description', 'image', 'date')
+
+
+class CulturalSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Cultural
+        fields = ('id', 'title', 'description', 'image')
+
+
+class ResultSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Result
+        fields = ('id', 'game_id', 'title', 'rate', 'athlete_full_name')
+
+
+class GameSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Game
+        fields = ('id', 'name', 'description', 'image', 'sex')
+
+
+class DormitoriesSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Dormitories
+        fields = ('id', 'name', 'description', 'direction_link', 'image')
+
+
+class GymSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Gym
+        fields = ('id', 'name', 'description', 'direction_link', 'image')
+
+
+class CompetitionSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Competition
+        fields = ('id', 'game_id', 'pdf_title', 'pdf_link', 'attention', 'description', 'date', 'start_time', 'end_time', 'city')
