@@ -6,7 +6,7 @@ class News(models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=1000, null=True)
     image = models.ImageField()
-    date = models.DateField()
+    date = models.CharField(max_length=10)
 
     def __str__(self):
         return self.title
@@ -44,7 +44,8 @@ class Competition(models.Model):
     pdf_link = models.FileField(blank=True, null=True)
     attention = models.CharField(max_length=1000, blank=True, null=True)
     description = models.CharField(max_length=1000, blank=True, null=True)
-    date = models.DateField()
+    # date = models.DateField()
+    date = models.CharField(max_length=10)
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
     city = models.CharField(max_length=2000, blank=True, null=True)
