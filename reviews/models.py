@@ -40,15 +40,15 @@ class Game(models.Model):
 class Competition(models.Model):
     id = models.BigAutoField(primary_key=True)
     game_id = models.ForeignKey("Game", on_delete=models.CASCADE)
-    pdf_title = models.CharField(max_length=1000, blank=True, null=True)
-    pdf_link = models.FileField(blank=True, null=True)
+    file_title = models.CharField(max_length=1000, blank=True, null=True)
+    file_link = models.FileField(blank=True, null=True)
     attention = models.CharField(max_length=1000, blank=True, null=True)
     description = models.CharField(max_length=1000, blank=True, null=True)
     # date = models.DateField()
     date = models.CharField(max_length=10)
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
-    city = models.CharField(max_length=2000, blank=True, null=True)
+    city = models.CharField(max_length=2000, default="")
 
     def __str__(self):
         return str(self.date)
@@ -58,11 +58,15 @@ class Result(models.Model):
     id = models.BigAutoField(primary_key=True)
     game_id = models.ForeignKey("Game", on_delete=models.CASCADE)
     title = models.CharField(max_length=1000, blank=True, null=True)
+    file_title = models.CharField(max_length=1000, blank=True, null=True)
+    file_link = models.FileField(blank=True, null=True)
+    attention = models.CharField(max_length=1000, blank=True, null=True)
+    city = models.CharField(max_length=1000, default="")
     rate = models.CharField(max_length=100)
     athlete_full_name = models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self):
-        return str(self.game_id)
+        return self.city
 
 
 class Dormitories(models.Model):

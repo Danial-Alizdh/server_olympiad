@@ -17,7 +17,7 @@ class CulturalSerializer(serializers.HyperlinkedModelSerializer):
 class ResultSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Result
-        fields = ('id', 'game_id', 'title', 'rate', 'athlete_full_name')
+        fields = ('id', 'game_id', 'title', 'file_title', 'file_link', 'attention', 'city', 'rate', 'athlete_full_name')
 
 
 class GameSerializer(serializers.HyperlinkedModelSerializer):
@@ -41,4 +41,4 @@ class GymSerializer(serializers.HyperlinkedModelSerializer):
 class CompetitionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Competition
-        fields = ('id', 'game_id', 'pdf_title', 'pdf_link', 'attention', 'description', 'date', 'start_time', 'end_time', 'city')
+        fields = ('id', 'game_id', 'file_title', 'file_link', 'attention', 'description', 'date', 'start_time', 'end_time', 'city')
