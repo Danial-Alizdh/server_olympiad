@@ -22,6 +22,15 @@ class Cultural(models.Model):
         return self.title
 
 
+class Gallery(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    title = models.CharField(max_length=100)
+    image = models.ImageField()
+
+    def __str__(self):
+        return self.title
+
+
 class Game(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100)
@@ -62,7 +71,7 @@ class Result(models.Model):
     file_link = models.FileField(blank=True, null=True)
     attention = models.CharField(max_length=1000, blank=True, null=True)
     city = models.CharField(max_length=1000, default="")
-    rate = models.CharField(max_length=100)
+    rate = models.CharField(max_length=100, blank=True, null=True, default=0)
     athlete_full_name = models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self):

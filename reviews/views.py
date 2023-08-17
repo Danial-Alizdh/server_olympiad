@@ -14,6 +14,11 @@ class CulturalViewSet(viewsets.ModelViewSet):
     serializer_class = CulturalSerializer
 
 
+class GalleryViewSet(viewsets.ModelViewSet):
+    queryset = Gallery.objects.all()
+    serializer_class = GallerySerializer
+
+
 class ResultViewSet(viewsets.ModelViewSet):
     queryset = Result.objects.all()
     serializer_class = ResultSerializer

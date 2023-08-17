@@ -25,6 +25,7 @@ from reviews import views
 router = routers.DefaultRouter()
 router.register(r'news_items', views.NewsViewSet)
 router.register(r'cultural_items', views.CulturalViewSet)
+router.register(r'gallery_items', views.GalleryViewSet)
 router.register(r'results_items', views.ResultViewSet)
 router.register(r'games_items', views.GameViewSet)
 router.register(r'dormitories_items', views.DormitoriesViewSet)

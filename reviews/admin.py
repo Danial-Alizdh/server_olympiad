@@ -21,6 +21,7 @@ class ImageWithNameAdmin(admin.ModelAdmin):
 
 admin.site.register(News, ImageWithTitleAdmin)
 admin.site.register(Cultural, ImageWithTitleAdmin)
+admin.site.register(Gallery, ImageWithTitleAdmin)
 admin.site.register(Result)
 admin.site.register(Game, ImageWithNameAdmin)
 admin.site.register(Dormitories, ImageWithNameAdmin)
