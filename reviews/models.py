@@ -4,7 +4,7 @@ from django.db import models
 class News(models.Model):
     id = models.BigAutoField(primary_key=True)
     title = models.CharField(max_length=100)
-    description = models.CharField(max_length=1000, null=True)
+    description = models.CharField(max_length=1000, blank=True, null=True)
     image = models.ImageField()
     date = models.CharField(max_length=10)
 
@@ -15,7 +15,7 @@ class News(models.Model):
 class Cultural(models.Model):
     id = models.BigAutoField(primary_key=True)
     title = models.CharField(max_length=100)
-    description = models.CharField(max_length=1000, null=True)
+    description = models.CharField(max_length=1000, blank=True, null=True)
     image = models.ImageField()
 
     def __str__(self):
@@ -36,11 +36,6 @@ class Game(models.Model):
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=1000, blank=True, null=True)
     image = models.ImageField()
-    SEX_CHOICES = (
-        ("پسر", "Boy"),
-        ("دختر", "Girl"),
-    )
-    sex = models.CharField(max_length=20, choices=SEX_CHOICES, default='Boy')
 
     def __str__(self):
         return self.name
@@ -53,7 +48,6 @@ class Competition(models.Model):
     file_link = models.FileField(blank=True, null=True)
     attention = models.CharField(max_length=1000, blank=True, null=True)
     description = models.CharField(max_length=1000, blank=True, null=True)
-    # date = models.DateField()
     date = models.CharField(max_length=10)
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
@@ -71,7 +65,7 @@ class Result(models.Model):
     file_link = models.FileField(blank=True, null=True)
     attention = models.CharField(max_length=1000, blank=True, null=True)
     city = models.CharField(max_length=1000, default="")
-    rate = models.CharField(max_length=100, blank=True, null=True, default=0)
+    rate = models.CharField(max_length=100, default="0")
     athlete_full_name = models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self):
@@ -81,8 +75,8 @@ class Result(models.Model):
 class Dormitories(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100)
-    description = models.CharField(max_length=1000, null=True)
-    direction_link = models.CharField(max_length=1000, null=True)
+    description = models.CharField(max_length=1000, blank=True, null=True)
+    direction_link = models.CharField(max_length=1000, blank=True, null=True)
     image = models.ImageField()
 
     def __str__(self):
@@ -92,8 +86,8 @@ class Dormitories(models.Model):
 class Gym(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100)
-    description = models.CharField(max_length=1000, null=True)
-    direction_link = models.CharField(max_length=1000, null=True)
+    description = models.CharField(max_length=1000, blank=True, null=True)
+    direction_link = models.CharField(max_length=1000, blank=True, null=True)
     image = models.ImageField()
 
     def __str__(self):
