@@ -92,3 +92,13 @@ class Gym(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Survey(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    context = models.TextField()
+
+    def __str__(self):
+        return self.email

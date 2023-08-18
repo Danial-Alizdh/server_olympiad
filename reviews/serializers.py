@@ -29,7 +29,7 @@ class ResultSerializer(serializers.HyperlinkedModelSerializer):
 class GameSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Game
-        fields = ('id', 'name', 'description', 'image', 'sex')
+        fields = ('id', 'name', 'description', 'image')
 
 
 class DormitoriesSerializer(serializers.HyperlinkedModelSerializer):
@@ -48,3 +48,9 @@ class CompetitionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Competition
         fields = ('id', 'game_id', 'file_title', 'file_link', 'attention', 'description', 'date', 'start_time', 'end_time', 'city')
+
+
+class SurveySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Survey
+        fields = ('id', 'name', 'email', 'context')

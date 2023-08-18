@@ -1,5 +1,10 @@
 from rest_framework import viewsets
-
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.contrib.auth.models import User
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from .serializers import *
 
 
@@ -42,3 +47,20 @@ class GymViewSet(viewsets.ModelViewSet):
 class CompetitionViewSet(viewsets.ModelViewSet):
     queryset = Competition.objects.all()
     serializer_class = CompetitionSerializer
+
+
+class SurveyViewSet(viewsets.ModelViewSet):
+    queryset = Survey.objects.all()
+    serializer_class = SurveySerializer
+
+
+@api_view(['POST'])
+def surveyListView(request):
+    print(request.data)
+    if request.method == 'POST':
+        serializer = SurveySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
