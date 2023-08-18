@@ -1,8 +1,5 @@
 from rest_framework import viewsets
-from django.shortcuts import render
-from django.http import JsonResponse
-from django.contrib.auth.models import User
-from rest_framework import status
+from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import *
@@ -14,12 +11,12 @@ class NewsViewSet(viewsets.ModelViewSet):
     serializer_class = NewsSerializer
 
 
-class CulturalViewSet(viewsets.ModelViewSet):
+class CulturalList(generics.ListAPIView):
     queryset = Cultural.objects.all()
     serializer_class = CulturalSerializer
 
 
-class GalleryViewSet(viewsets.ModelViewSet):
+class GalleryList(generics.ListAPIView):
     queryset = Gallery.objects.all()
     serializer_class = GallerySerializer
 

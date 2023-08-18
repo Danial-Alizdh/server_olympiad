@@ -3,13 +3,11 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
-
 from reviews import views
+from reviews.views import GalleryList, CulturalList
 
 router = routers.DefaultRouter()
 router.register(r'news_items', views.NewsViewSet)
-router.register(r'cultural_items', views.CulturalViewSet)
-router.register(r'gallery_items', views.GalleryViewSet)
 router.register(r'results_items', views.ResultViewSet)
 router.register(r'games_items', views.GameViewSet)
 router.register(r'dormitories_items', views.DormitoriesViewSet)
@@ -23,4 +21,8 @@ urlpatterns = [
     path('', include(router.urls)),
 
     path('add-survey/', views.surveyListView),
+
+    path('gallery_items/', GalleryList.as_view(), name='gallery-list'),
+
+    path('cultural_items/', CulturalList.as_view(), name='cultural-list'),
 ]

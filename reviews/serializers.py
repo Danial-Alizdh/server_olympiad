@@ -8,16 +8,26 @@ class NewsSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'title', 'description', 'image', 'date')
 
 
-class CulturalSerializer(serializers.HyperlinkedModelSerializer):
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Image
+        fields = ('image',)
+
+
+class CulturalSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True, read_only=True)
+
     class Meta:
         model = Cultural
-        fields = ('id', 'title', 'description', 'image')
+        fields = ('id', 'title', 'images')
 
 
-class GallerySerializer(serializers.HyperlinkedModelSerializer):
+class GallerySerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True, read_only=True)
+
     class Meta:
         model = Gallery
-        fields = ('id', 'title', 'image')
+        fields = ('id', 'title', 'images')
 
 
 class ResultSerializer(serializers.HyperlinkedModelSerializer):

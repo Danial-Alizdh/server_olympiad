@@ -16,11 +16,17 @@ class News(models.Model):
         return self.title
 
 
+class Image(models.Model):
+    image = models.ImageField()
+
+    def __str__(self):
+        return self.image.name
+
+
 class Cultural(models.Model):
     id = models.BigAutoField(primary_key=True)
     title = models.CharField(max_length=100, verbose_name="عنوان")
-    description = models.CharField(max_length=1000, blank=True, null=True, verbose_name="توضیحات")
-    image = models.ImageField(verbose_name="عکس")
+    images = models.ManyToManyField(Image, related_name='culturals')
 
     class Meta:
         verbose_name_plural = "فرهنگی‌ها"
@@ -33,7 +39,7 @@ class Cultural(models.Model):
 class Gallery(models.Model):
     id = models.BigAutoField(primary_key=True)
     title = models.CharField(max_length=100, verbose_name="عنوان")
-    image = models.ImageField(verbose_name="عکس")
+    images = models.ManyToManyField(Image, related_name='galleries')
 
     class Meta:
         verbose_name_plural = "گالری"
