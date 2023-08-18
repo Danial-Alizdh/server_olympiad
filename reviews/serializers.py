@@ -16,7 +16,7 @@ class CulturalSerializer(serializers.HyperlinkedModelSerializer):
 
 class GallerySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Cultural
+        model = Gallery
         fields = ('id', 'title', 'image')
 
 
