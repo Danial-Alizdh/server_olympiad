@@ -21,6 +21,11 @@ class GalleryList(generics.ListAPIView):
     serializer_class = GallerySerializer
 
 
+class ChampionshipList(generics.ListAPIView):
+    queryset = Championship.objects.all()
+    serializer_class = ChampionshipSerializer
+
+
 class ResultViewSet(viewsets.ModelViewSet):
     queryset = Result.objects.all()
     serializer_class = ResultSerializer

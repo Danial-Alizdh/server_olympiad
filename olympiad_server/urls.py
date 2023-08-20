@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
 from reviews import views
-from reviews.views import GalleryList, CulturalList
+from reviews.views import *
 
 router = routers.DefaultRouter()
 router.register(r'news_items', views.NewsViewSet)
@@ -25,4 +25,6 @@ urlpatterns = [
     path('gallery_items/', GalleryList.as_view(), name='gallery-list'),
 
     path('cultural_items/', CulturalList.as_view(), name='cultural-list'),
+
+    path('championship_items/', ChampionshipList.as_view(), name='championship-list'),
 ]

@@ -7,6 +7,7 @@ class News(models.Model):
     description = models.CharField(max_length=1000, blank=True, null=True, verbose_name="توضیحات")
     image = models.ImageField(verbose_name="عکس")
     date = models.CharField(max_length=10, verbose_name="تاریخ")
+    link = models.CharField(max_length=1000, blank=True, null=True, verbose_name="لینک سایت")
 
     class Meta:
         verbose_name_plural = "اخبار"
@@ -44,6 +45,20 @@ class Gallery(models.Model):
     class Meta:
         verbose_name_plural = "گالری"
         verbose_name = "گالری"
+
+    def __str__(self):
+        return self.title
+
+
+# championship
+class Championship(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    title = models.CharField(max_length=100, verbose_name="عنوان")
+    images = models.ManyToManyField(Image, related_name='championships')
+
+    class Meta:
+        verbose_name_plural = "پایگاه قهرمانی"
+        verbose_name = "پایگاه قهرمانی"
 
     def __str__(self):
         return self.title

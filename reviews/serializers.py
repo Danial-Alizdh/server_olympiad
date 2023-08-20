@@ -5,7 +5,7 @@ from .models import *
 class NewsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = News
-        fields = ('id', 'title', 'description', 'image', 'date')
+        fields = ('id', 'title', 'description', 'image', 'date', 'link')
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -27,6 +27,14 @@ class GallerySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Gallery
+        fields = ('id', 'title', 'images')
+
+
+class ChampionshipSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Championship
         fields = ('id', 'title', 'images')
 
 
