@@ -13,6 +13,7 @@ router.register(r'games_items', views.GameViewSet)
 router.register(r'dormitories_items', views.DormitoriesViewSet)
 router.register(r'gyms_items', views.GymViewSet)
 router.register(r'timing_competitions_items', views.CompetitionViewSet)
+router.register(r'top_results', views.TopResultsViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

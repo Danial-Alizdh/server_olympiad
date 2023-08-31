@@ -159,3 +159,18 @@ class Survey(models.Model):
 
     def __str__(self):
         return self.email
+
+
+class TopResults(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    game_id = models.ForeignKey("Game", on_delete=models.CASCADE, verbose_name="نام بازی")
+    gold = models.IntegerField(verbose_name="طلا", default=0, blank=True, null=True)
+    silver = models.IntegerField(verbose_name="نقره", default=0, blank=True, null=True)
+    bronze = models.IntegerField(verbose_name="برنز", default=0, blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = "نتایج برتر (در صفحه اول)"
+        verbose_name = "نتایج برتر"
+
+    def __str__(self):
+        return str(self.game_id)

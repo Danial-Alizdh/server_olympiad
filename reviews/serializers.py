@@ -72,3 +72,9 @@ class SurveySerializer(serializers.ModelSerializer):
     class Meta:
         model = Survey
         fields = ('id', 'name', 'email', 'context')
+
+
+class TopResultsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TopResults
+        fields = ('id', 'game_id', 'gold', 'silver', 'bronze')

@@ -56,6 +56,11 @@ class SurveyViewSet(viewsets.ModelViewSet):
     serializer_class = SurveySerializer
 
 
+class TopResultsViewSet(viewsets.ModelViewSet):
+    queryset = TopResults.objects.all()
+    serializer_class = TopResultsSerializer
+
+
 @api_view(['POST'])
 def surveyListView(request):
     print(request.data)
