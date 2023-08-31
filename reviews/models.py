@@ -163,7 +163,7 @@ class Survey(models.Model):
 
 class TopResults(models.Model):
     id = models.BigAutoField(primary_key=True)
-    game_id = models.ForeignKey("Game", on_delete=models.CASCADE, verbose_name="نام بازی")
+    city = models.CharField(max_length=1000, default="", verbose_name="استان")
     gold = models.IntegerField(verbose_name="طلا", default=0, blank=True, null=True)
     silver = models.IntegerField(verbose_name="نقره", default=0, blank=True, null=True)
     bronze = models.IntegerField(verbose_name="برنز", default=0, blank=True, null=True)
@@ -173,4 +173,4 @@ class TopResults(models.Model):
         verbose_name = "نتایج برتر"
 
     def __str__(self):
-        return str(self.game_id)
+        return self.city
