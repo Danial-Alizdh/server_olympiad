@@ -167,6 +167,7 @@ class TopResults(models.Model):
     gold = models.IntegerField(verbose_name="طلا", default=0, blank=True, null=True)
     silver = models.IntegerField(verbose_name="نقره", default=0, blank=True, null=True)
     bronze = models.IntegerField(verbose_name="برنز", default=0, blank=True, null=True)
+    description = models.CharField(max_length=10000, blank=True, null=True, verbose_name="توضیحات")
 
     class Meta:
         verbose_name_plural = "نتایج برتر (در صفحه اول)"
