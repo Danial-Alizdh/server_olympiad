@@ -9,3 +9,4 @@ django-simplestatic
 django-cors-headers
 bcrypt
 uvicorn
+gunicorn:
