@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'reviews.apps.ReviewsConfig',
     'rest_framework',
     'corsheaders',
+    'authentication',
 ]
 
 MIDDLEWARE = [
@@ -86,8 +87,11 @@ DATABASES = {
     }
 }
 
-MEDIA_URL = 'uploads/'
-MEDIA_ROOT = BASE_DIR / 'uploads/'
+MEDIA_URL_APP1 = 'uploads/'
+MEDIA_ROOT_APP1 = BASE_DIR / 'uploads/'
+
+MEDIA_URL_APP2 = 'profile_pics/'
+MEDIA_ROOT_APP2 = BASE_DIR / 'profile_pics/'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

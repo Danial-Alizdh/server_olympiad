@@ -63,7 +63,6 @@ class TopResultsViewSet(viewsets.ModelViewSet):
 
 @api_view(['POST'])
 def surveyListView(request):
-    print(request.data)
     if request.method == 'POST':
         serializer = SurveySerializer(data=request.data)
         if serializer.is_valid():
