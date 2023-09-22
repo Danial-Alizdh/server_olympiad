@@ -1,1 +1,11 @@
+django
+djangorestframework
+Pillow
+django-filter
+djangorestframework
+djangorestframework-jsonapi
+django-spinproject
+django-simplestatic
+django-cors-headers
+bcrypt
 uvicorn
