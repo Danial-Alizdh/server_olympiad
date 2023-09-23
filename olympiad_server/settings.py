@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-#(nz+9c$l4^(z$ud(cn70u%uyyh!k7riy!5+4k%$g75r)vxc=@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://olympiad-server.onrender.com/', 'https://olympiad-umber.vercel.app/']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
