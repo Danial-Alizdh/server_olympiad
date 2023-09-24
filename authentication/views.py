@@ -65,11 +65,8 @@ def login(request):
             user.save()
 
             data = {
-                'email': user.email,
                 'username': user.username,
-                'image_profile': None if user.image_profile == "" else user.image_profile.url,
                 'login_token': user.login_token,
-                'admin': email == ADMIN_EMAIL,
             }
             return JsonResponse(data, safe=False, status=status.HTTP_200_OK)
         else:

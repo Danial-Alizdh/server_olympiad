@@ -1,12 +1,11 @@
 import decimal
-
 from django.contrib.auth.models import User
 from django.db import models
-from PIL import Image
 from django.core.validators import MinValueValidator, MaxValueValidator
 import uuid
 
 ADMIN_EMAIL = "AA@gmail.com"
+# ADMIN_PASSWORD = 'AA'
 
 
 class DepartmentNews(models.Model):
@@ -36,6 +35,9 @@ class DepartmentNews(models.Model):
 
 class UserProfile(models.Model):
     email = models.EmailField(verbose_name="آدرس ایمیل", primary_key=True, unique=True, null=False)
+    phone_number = models.IntegerField(verbose_name="شماره موبایل",
+                                       validators=[MinValueValidator(11), MaxValueValidator(11)], unique=True,
+                                       null=False)
     username = models.CharField(verbose_name="نام کاربری", max_length=50, null=False, default='noName')
     password = models.CharField(max_length=16, null=False, editable=False)
     image_profile = models.ImageField(verbose_name="تصویر پروفایل", upload_to='profile_pics', null=True, blank=True)
@@ -58,6 +60,11 @@ class UserProfile(models.Model):
         ('coach', 'coach'),
         ('gym_manager', 'gym_manager'),
         ('actor', 'actor'),
+        ('office_admin', 'office_admin'),
+        ('office_manager', 'office_manager'),
+        ('office_expert', 'office_expert'),
+        ('board_admin', 'board_admin'),
+        ('board_authorities', 'board_authorities'),
     )
 
     role = models.CharField(
@@ -74,19 +81,10 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.email
 
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
-    #
-    #     if self.image_profile and self.image_profile != 'null':
-    #         img = Image.open(self.image_profile.path)
-    #         if img.height > 300 or img.width > 300:
-    #             output_size = (300, 300)
-    #             img.thumbnail(output_size)
-    #             img.save(self.image_profile.path)
-
     def to_dict(self):
         return {
             'email': self.email,
+            'phone_number': self.phone_number,
             'username': self.username,
             'image_profile': None if self.image_profile == '' else self.image_profile.url,
             'bio': self.bio,
@@ -98,22 +96,19 @@ class UserProfile(models.Model):
 
     def update_average_rating(self, new_rating):
         new_rating = decimal.Decimal(new_rating)
-        # Calculate the new total rating by adding the new rating to the current total
         self.total_rating += new_rating
-        # Increment the number of ratings
         self.num_ratings += 1
-        # Calculate the new average rating
         if self.num_ratings > 0:
             self.rate = self.total_rating / self.num_ratings
         else:
             self.rate = 0.0
-        # Save the updated object
         self.save()
 
 
 class Coach(models.Model):
     user = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
-    document_image = models.ImageField(verbose_name="تصویر کارت مربی‌گری", upload_to='profile_pics/lisense_pics', null=True, blank=True)
+    document_image = models.ImageField(verbose_name="تصویر کارت مربی‌گری", upload_to='profile_pics/lisense_pics',
+                                       null=True, blank=True)
     education = models.CharField(verbose_name="تحصیلات", max_length=40)
     field = models.CharField(verbose_name="تخصص‌ها", max_length=1000, null=True, blank=True)
     gym = models.ForeignKey(verbose_name="باشگاه", to='GymManager', on_delete=models.SET_NULL, null=True, blank=True)
@@ -122,19 +117,10 @@ class Coach(models.Model):
         verbose_name_plural = "مربی‌ها"
         verbose_name = "مربی"
 
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
-    #
-    #     if self.document_image:
-    #         img = Image.open(self.document_image.path)
-    #         if img.height > 300 or img.width > 300:
-    #             output_size = (300, 300)
-    #             img.thumbnail(output_size)
-    #             img.save(self.document_image.path)
-
     def to_dict(self):
         return {
             'email': self.user.email,
+            'phone_number': self.user.phone_number,
             'username': self.user.username,
             'image_profile': None if self.user.image_profile == '' else self.user.image_profile.url,
             'bio': self.user.bio,
@@ -148,49 +134,25 @@ class Coach(models.Model):
             'gym': self.gym.for_coach(),
         }
 
-    # def for_gym(self):
-    #     return {
-    #         'email': self.user.email,
-    #         'username': self.user.username,
-    #         'image_profile': self.user.image_profile.url,
-    #         'accepted': self.user.accepted,
-    #         'rejected': self.user.rejected,
-    #     }
 
 class GymManager(models.Model):
     user = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
     name = models.CharField(verbose_name="نام باشگاه", max_length=50, unique=True)
     image = models.ImageField(verbose_name="تصویر باشگاه", upload_to='profile_pics/gym_place', null=True, blank=True)
-    document_image = models.ImageField(verbose_name="تصویر پروانه", upload_to='profile_pics/lisense_pics', null=True, blank=True)
+    document_image = models.ImageField(verbose_name="تصویر پروانه", upload_to='profile_pics/lisense_pics', null=True,
+                                       blank=True)
     possibilities = models.TextField(verbose_name="امکانات", max_length=2000, blank=True)
     location = models.CharField(verbose_name="آدرس", max_length=1000)
     location_link = models.CharField(verbose_name="لینک آدرس", max_length=50, null=True, blank=True)
-    # coaches = models.ManyToManyField(verbose_name="مربی‌ها", to='Coach', related_name='gyms_managed', blank=True)
 
     class Meta:
         verbose_name_plural = "سالن‌دارها"
         verbose_name = "سالن‌دار"
 
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
-    #
-    #     if self.image:
-    #         img = Image.open(self.image.path)
-    #         if img.height > 300 or img.width > 300:
-    #             output_size = (300, 300)
-    #             img.thumbnail(output_size)
-    #             img.save(self.image.path)
-    #
-    #     if self.document_image:
-    #         img = Image.open(self.document_image.path)
-    #         if img.height > 300 or img.width > 300:
-    #             output_size = (300, 300)
-    #             img.thumbnail(output_size)
-    #             img.save(self.document_image.path)
-
     def to_dict(self):
         return {
             'email': self.user.email,
+            'phone_number': self.user.phone_number,
             'username': self.user.username,
             'image_profile': None if self.user.image_profile == '' else self.user.image_profile.url,
             'bio': self.user.bio,
@@ -209,6 +171,7 @@ class GymManager(models.Model):
     def for_coach(self):
         return {
             'email': self.user.email,
+            'phone_number': self.user.phone_number,
             'username': self.user.username,
             'accepted': self.user.accepted,
             'rejected': self.user.rejected,
@@ -219,26 +182,18 @@ class GymManager(models.Model):
 
 class Actor(models.Model):
     user = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
-    document_image = models.ImageField(verbose_name="تصویر حکم قهرمانی", upload_to='profile_pics/lisense_pics', null=True, blank=True)
+    document_image = models.ImageField(verbose_name="تصویر حکم قهرمانی", upload_to='profile_pics/lisense_pics',
+                                       null=True, blank=True)
     field = models.CharField(verbose_name="رشته", max_length=30)
 
     class Meta:
         verbose_name_plural = "قهرمان‌ها"
         verbose_name = "قهرمان"
 
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
-    #
-    #     if self.document_image:
-    #         img = Image.open(self.document_image.path)
-    #         if img.height > 300 or img.width > 300:
-    #             output_size = (300, 300)
-    #             img.thumbnail(output_size)
-    #             img.save(self.document_image.path)
-
     def to_dict(self):
         return {
             'email': self.user.email,
+            'phone_number': self.user.phone_number,
             'username': self.user.username,
             'image_profile': None if self.user.image_profile == '' else self.user.image_profile.url,
             'bio': self.user.bio,
@@ -248,4 +203,150 @@ class Actor(models.Model):
             'rejected': self.user.rejected,
             'field': self.field,
             'document_image': None if self.document_image == '' else self.document_image.url,
+        }
+
+
+class OfficeAuthorities(models.Model):
+    user = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
+    office = models.ForeignKey(verbose_name="اداره", to='Office', on_delete=models.SET_NULL, null=False)
+
+    def to_dict(self):
+        return {
+            'board': self.office.for_auth(),
+            'email': self.user.email,
+            'username': self.user.username,
+            'image_profile': None if self.user.image_profile == '' else self.user.image_profile.url,
+            'bio': self.user.bio,
+            'role': self.user.role,
+            'rate': self.user.rate,
+            'accepted': self.user.accepted,
+            'rejected': self.user.rejected,
+        }
+
+
+class Office(models.Model):
+    user = models.OneToOneField(UserProfile, on_delete=models.CASCADE, verbose_name='ادمین اداره')
+    name = models.CharField(verbose_name='نام اداره', max_length=50, null=False)
+    location = models.CharField(verbose_name='آدرس', null=False, max_length=1000)
+
+    def for_auth(self):
+        return {
+            'name': self.name,
+            'email': self.user.email,
+        }
+
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'location': self.location,
+            'email': self.user.email,
+            'username': self.user.username,
+            'image_profile': None if self.user.image_profile == '' else self.user.image_profile.url,
+            'bio': self.user.bio,
+            'role': self.user.role,
+            'rate': self.user.rate,
+            'accepted': self.user.accepted,
+            'rejected': self.user.rejected,
+        }
+
+
+class BoardAuthorities(models.Model):
+    user = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
+    board = models.ForeignKey(verbose_name="هیئت", to='Board', on_delete=models.SET_NULL, null=False)
+
+    def to_dict(self):
+        return {
+            'board': self.board.for_auth(),
+            'email': self.user.email,
+            'username': self.user.username,
+            'image_profile': None if self.user.image_profile == '' else self.user.image_profile.url,
+            'bio': self.user.bio,
+            'role': self.user.role,
+            'rate': self.user.rate,
+            'accepted': self.user.accepted,
+            'rejected': self.user.rejected,
+        }
+
+
+class Board(models.Model):
+    user = models.OneToOneField(UserProfile, on_delete=models.CASCADE, verbose_name='ادمین هیئت')
+    name = models.CharField(verbose_name='نام هیئت', max_length=50, null=False)
+    goals = models.CharField(verbose_name='اهداف', max_length=1500, null=True, blank=True)
+    location = models.CharField(verbose_name='آدرس', null=False, max_length=1000)
+
+    def for_auth(self):
+        return {
+            'name': self.name,
+            'email': self.user.email,
+        }
+
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'goals': self.goals,
+            'location': self.location,
+            'email': self.user.email,
+            'username': self.user.username,
+            'image_profile': None if self.user.image_profile == '' else self.user.image_profile.url,
+            'bio': self.user.bio,
+            'role': self.user.role,
+            'rate': self.user.rate,
+            'accepted': self.user.accepted,
+            'rejected': self.user.rejected,
+        }
+
+
+class Classroom(models.Model):
+    name = models.CharField(verbose_name='نام کلاس', null=False, max_length=30)
+    date = models.CharField(verbose_name='تاریخ برگزاری', null=False, max_length=10)
+    time = models.CharField(verbose_name='زمان شروع کلاس', null=False, max_length=8)
+    location = models.CharField(verbose_name='مکان برگزاری', null=False, max_length=100)
+    link = models.CharField(verbose_name='لینک کلاس', null=False, max_length=1500)
+    capacity = models.IntegerField(verbose_name='ظرفیت کلاس', null=False, max_length=3)
+    users = models.ManyToManyField(UserProfile, on_delete=models.CASCADE, verbose_name='افراد شرکت‌کننده')
+    board = models.ForeignKey(verbose_name="هیئت برگزارکننده", to='Board', on_delete=models.SET_NULL, null=False)
+
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'date': self.date,
+            'time': self.time,
+            'location': self.location,
+            'link': self.link,
+            'capacity': self.capacity,
+            'board_email': self.board.user.email,
+            'board_name': self.board.name,
+        }
+
+
+class BoardGame(models.Model):
+    name = models.CharField(verbose_name='نام بازی', null=False, max_length=30)
+    image = models.ImageField(verbose_name="تصویر", upload_to='profile_pics', null=True, blank=True)
+    date = models.CharField(verbose_name='تاریخ برگزاری', null=False, max_length=10)
+    time = models.CharField(verbose_name='زمان شروع بازی', null=False, max_length=8)
+    location = models.CharField(verbose_name='مکان برگزاری', null=False, max_length=100)
+    board = models.ForeignKey(verbose_name="هیئت برگزارکننده", to='Board', on_delete=models.SET_NULL, null=False)
+
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'image': None if self.image == '' else self.image.url,
+            'date': self.date,
+            'time': self.time,
+            'location': self.location,
+            'board_email': self.board.user.email,
+            'board_name': self.board.name,
+        }
+
+
+class Message(models.Model):
+    office_manager = models.ForeignKey(verbose_name="مدیر", to='OfficeAuthorities', on_delete=models.SET_NULL, null=False)
+    message = models.TextField(verbose_name='متن پیام', null=False, max_length=3000)
+    answered = models.BooleanField(verbose_name='پاسخ‌داده شده', default=False)
+
+    def to_dict(self):
+        return {
+            'office_manager': self.office_manager.user.email,
+            'message': self.message,
+            'answered': self.answered
         }
