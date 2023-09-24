@@ -37,7 +37,7 @@ class UserProfile(models.Model):
     email = models.EmailField(verbose_name="آدرس ایمیل", primary_key=True, unique=True, null=False)
     phone_number = models.IntegerField(verbose_name="شماره موبایل",
                                        validators=[MinValueValidator(11), MaxValueValidator(11)], unique=True,
-                                       null=False)
+                                       null=True)
     username = models.CharField(verbose_name="نام کاربری", max_length=50, null=False, default='noName')
     password = models.CharField(max_length=16, null=False, editable=False)
     image_profile = models.ImageField(verbose_name="تصویر پروفایل", upload_to='profile_pics', null=True, blank=True)
@@ -69,7 +69,7 @@ class UserProfile(models.Model):
 
     role = models.CharField(
         verbose_name="نقش کاربر",
-        max_length=15,
+        max_length=20,
         choices=USER_ROLES,
         default='simple_user',
     )
@@ -208,7 +208,7 @@ class Actor(models.Model):
 
 class OfficeAuthorities(models.Model):
     user = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
-    office = models.ForeignKey(verbose_name="اداره", to='Office', on_delete=models.SET_NULL, null=False)
+    office = models.ForeignKey(verbose_name="اداره", to='Office', on_delete=models.SET_NULL, null=True)
 
     def to_dict(self):
         return {
@@ -252,7 +252,7 @@ class Office(models.Model):
 
 class BoardAuthorities(models.Model):
     user = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
-    board = models.ForeignKey(verbose_name="هیئت", to='Board', on_delete=models.SET_NULL, null=False)
+    board = models.ForeignKey(verbose_name="هیئت", to='Board', on_delete=models.SET_NULL, null=True)
 
     def to_dict(self):
         return {
@@ -302,9 +302,9 @@ class Classroom(models.Model):
     time = models.CharField(verbose_name='زمان شروع کلاس', null=False, max_length=8)
     location = models.CharField(verbose_name='مکان برگزاری', null=False, max_length=100)
     link = models.CharField(verbose_name='لینک کلاس', null=False, max_length=1500)
-    capacity = models.IntegerField(verbose_name='ظرفیت کلاس', null=False, max_length=3)
-    users = models.ManyToManyField(UserProfile, on_delete=models.CASCADE, verbose_name='افراد شرکت‌کننده')
-    board = models.ForeignKey(verbose_name="هیئت برگزارکننده", to='Board', on_delete=models.SET_NULL, null=False)
+    capacity = models.IntegerField(verbose_name='ظرفیت کلاس', null=False)
+    users = models.ManyToManyField(UserProfile, verbose_name='افراد شرکت‌کننده')
+    board = models.ForeignKey(verbose_name="هیئت برگزارکننده", to='Board', on_delete=models.SET_NULL, null=True)
 
     def to_dict(self):
         return {
@@ -325,7 +325,7 @@ class BoardGame(models.Model):
     date = models.CharField(verbose_name='تاریخ برگزاری', null=False, max_length=10)
     time = models.CharField(verbose_name='زمان شروع بازی', null=False, max_length=8)
     location = models.CharField(verbose_name='مکان برگزاری', null=False, max_length=100)
-    board = models.ForeignKey(verbose_name="هیئت برگزارکننده", to='Board', on_delete=models.SET_NULL, null=False)
+    board = models.ForeignKey(verbose_name="هیئت برگزارکننده", to='Board', on_delete=models.SET_NULL, null=True)
 
     def to_dict(self):
         return {
@@ -340,7 +340,7 @@ class BoardGame(models.Model):
 
 
 class Message(models.Model):
-    office_manager = models.ForeignKey(verbose_name="مدیر", to='OfficeAuthorities', on_delete=models.SET_NULL, null=False)
+    office_manager = models.ForeignKey(verbose_name="مدیر", to='OfficeAuthorities', on_delete=models.SET_NULL, null=True)
     message = models.TextField(verbose_name='متن پیام', null=False, max_length=3000)
     answered = models.BooleanField(verbose_name='پاسخ‌داده شده', default=False)
 
