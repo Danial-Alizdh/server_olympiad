@@ -209,7 +209,6 @@ def update_profile(request):
             if 'document_image' in request.data and request.data['document_image'] is not None:
                 gym_manager.document_image = request.data['document_image']
             if 'image' in request.data and request.data['image'] is not None:
-                print('fffffffffff' + str(request.data['image']))
                 gym_manager.image = request.data['image']
             if 'location' in request.data:
                 gym_manager.location = request.data['location']
@@ -225,6 +224,16 @@ def update_profile(request):
             if 'document_image' in request.data and request.data['document_image'] is not None:
                 actor.document_image = request.data['document_image']
             actor.save()
+        elif role == 'office_admin':
+            office, created = Office.objects.get_or_create(user=user)
+            office.user.accepted = False
+            office.user.rejected = False
+            office.save()
+        elif role == 'board_admin':
+            board, created = Board.objects.get_or_create(user=user)
+            board.user.accepted = False
+            board.user.rejected = False
+            board.save()
 
         user.save()
         return JsonResponse({'username': user.username}, status=status.HTTP_200_OK)
