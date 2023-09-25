@@ -16,7 +16,15 @@ def get_department_news(request):
     if news.count() == 0:
         return JsonResponse({'message': 'خبری وجود ندارد'}, status=status.HTTP_200_OK)
 
-    response_data = {'news': [n.to_dict() for n in news]}
+    special_roles = ['office_admin', 'office_manager', 'office_expert', 'board_admin', 'board_authorities']
+
+    flag = False
+    auth_header = request.META.get('HTTP_AUTHORIZATION', None)
+    if auth_header:
+        user = UserProfile.objects.get(login_token=auth_header)
+        if user and (user.email == ADMIN_EMAIL or user.role in special_roles):
+            flag = True
+    response_data = {'news': [n.to_dict() for n in news], 'addNews': flag}
     return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
 
 
