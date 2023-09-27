@@ -19,7 +19,6 @@ urlpatterns = [
     path('profile/', profile, name='profile'),
     path('main_page/', main_page, name='main_page'),
     path('update_profile/', update_profile, name='update_profile'),
-    # path('change_user_role/', change_user_role, name='change_user_role'),
     path('accept_role/', accept_role, name='accept_role'),
     path('get_users_by_role/', get_users_by_role, name='get_users_by_role'),
     path('user_information/', user_information, name='user_information'),
