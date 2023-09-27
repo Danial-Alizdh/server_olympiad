@@ -28,6 +28,66 @@ def get_department_news(request):
     return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
 
 
+@api_view(['GET'])
+def get_department_office(request):
+    office = Office.objects.all()
+
+    if office.count() == 0:
+        return JsonResponse({'message': 'اداره‌ای وجود ندارد'}, status=status.HTTP_200_OK)
+
+    response_data = {'office': [n.to_dict() for n in office]}
+    return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def get_department_game(request):
+    game = BoardGame.objects.all()
+
+    if game.count() == 0:
+        return JsonResponse({'message': 'بازی‌ای وجود ندارد'}, status=status.HTTP_200_OK)
+
+    special_roles = ['board_admin', 'board_authorities']
+
+    flag = False
+    auth_header = request.META.get('HTTP_AUTHORIZATION', None)
+    if auth_header:
+        user = UserProfile.objects.get(login_token=auth_header)
+        if user and (user.email == ADMIN_EMAIL or user.role in special_roles):
+            flag = True
+    response_data = {'game': [n.to_dict() for n in game], 'addGame': flag}
+    return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def get_department_classroom(request):
+    classroom = Classroom.objects.all()
+
+    if classroom.count() == 0:
+        return JsonResponse({'message': 'کلاسی وجود ندارد'}, status=status.HTTP_200_OK)
+
+    special_roles = ['board_admin', 'board_authorities']
+
+    flag = False
+    auth_header = request.META.get('HTTP_AUTHORIZATION', None)
+    if auth_header:
+        user = UserProfile.objects.get(login_token=auth_header)
+        if user and (user.email == ADMIN_EMAIL or user.role in special_roles):
+            flag = True
+    response_data = {'classroom': [n.to_dict() for n in classroom], 'addClassroom': flag}
+    return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def get_department_board(request):
+    board = Board.objects.all()
+
+    if board.count() == 0:
+        return JsonResponse({'message': 'هیئتی وجود ندارد'}, status=status.HTTP_200_OK)
+
+    response_data = {'board': [n.to_dict() for n in board]}
+    return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
+
+
 def generate_login_token():
     return str(uuid.uuid4())
 
@@ -117,6 +177,10 @@ def profile(request):
             data['coaches'] = [c.to_dict() for c in Coach.objects.filter(gym=GymManager.objects.get(user=UserProfile.objects.get(email=data['email'])))]
         elif user.role == 'actor':
             data = Actor.objects.filter(user=user).first().to_dict()
+        elif user.role == 'office_admin':
+            data = Office.objects.filter(user=user).first().to_dict()
+        elif user.role == 'board_admin':
+            data = Board.objects.filter(user=user).first().to_dict()
 
         return JsonResponse(data, safe=False, status=status.HTTP_200_OK)
     return Response({'message': 'درخواست اشتباه'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -188,6 +252,7 @@ def update_profile(request):
             user.image_profile = request.data['image_profile']
 
         user.username = request.data['username']
+        user.phone_number = request.data['phone_number']
         user.bio = request.data['bio']
         user.role = role
 
@@ -226,13 +291,19 @@ def update_profile(request):
             actor.save()
         elif role == 'office_admin':
             office, created = Office.objects.get_or_create(user=user)
-            office.user.accepted = False
-            office.user.rejected = False
+            if 'name' in request.data:
+                office.name = request.data['name']
+            if 'location' in request.data:
+                office.location = request.data['location']
             office.save()
         elif role == 'board_admin':
             board, created = Board.objects.get_or_create(user=user)
-            board.user.accepted = False
-            board.user.rejected = False
+            if 'name' in request.data:
+                board.name = request.data['name']
+            if 'goal' in request.data:
+                board.goal = request.data['goal']
+            if 'location' in request.data:
+                board.location = request.data['location']
             board.save()
 
         user.save()
@@ -299,6 +370,10 @@ def get_users_by_role(request):
             data = GymManager.objects.all()
         elif role == 'actor':
             data = Actor.objects.all()
+        elif role == 'office_admin':
+            data = Office.objects.all()
+        elif role == 'board_admin':
+            data = Board.objects.all()
 
         if data is None or data.count() == 0:
             return JsonResponse({}, safe=False, status=status.HTTP_204_NO_CONTENT)

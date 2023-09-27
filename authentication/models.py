@@ -210,10 +210,15 @@ class OfficeAuthorities(models.Model):
     user = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
     office = models.ForeignKey(verbose_name="اداره", to='Office', on_delete=models.SET_NULL, null=True)
 
+    class Meta:
+        verbose_name_plural = "کارمندان اداره‌ها"
+        verbose_name = "کارمند اداره"
+
     def to_dict(self):
         return {
             'board': self.office.for_auth(),
             'email': self.user.email,
+            'phone_number': self.user.phone_number,
             'username': self.user.username,
             'image_profile': None if self.user.image_profile == '' else self.user.image_profile.url,
             'bio': self.user.bio,
@@ -229,6 +234,10 @@ class Office(models.Model):
     name = models.CharField(verbose_name='نام اداره', max_length=50, null=False)
     location = models.CharField(verbose_name='آدرس', null=False, max_length=1000)
 
+    class Meta:
+        verbose_name_plural = "اداره‌ها"
+        verbose_name = "اداره"
+
     def for_auth(self):
         return {
             'name': self.name,
@@ -240,6 +249,7 @@ class Office(models.Model):
             'name': self.name,
             'location': self.location,
             'email': self.user.email,
+            'phone_number': self.user.phone_number,
             'username': self.user.username,
             'image_profile': None if self.user.image_profile == '' else self.user.image_profile.url,
             'bio': self.user.bio,
@@ -254,10 +264,15 @@ class BoardAuthorities(models.Model):
     user = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
     board = models.ForeignKey(verbose_name="هیئت", to='Board', on_delete=models.SET_NULL, null=True)
 
+    class Meta:
+        verbose_name_plural = "کارشناس‌های هیئت‌ها"
+        verbose_name = "کارشناس اداره"
+
     def to_dict(self):
         return {
             'board': self.board.for_auth(),
             'email': self.user.email,
+            'phone_number': self.user.phone_number,
             'username': self.user.username,
             'image_profile': None if self.user.image_profile == '' else self.user.image_profile.url,
             'bio': self.user.bio,
@@ -274,6 +289,10 @@ class Board(models.Model):
     goals = models.CharField(verbose_name='اهداف', max_length=1500, null=True, blank=True)
     location = models.CharField(verbose_name='آدرس', null=False, max_length=1000)
 
+    class Meta:
+        verbose_name_plural = "هیئت‌ها"
+        verbose_name = "هیئت"
+
     def for_auth(self):
         return {
             'name': self.name,
@@ -286,6 +305,7 @@ class Board(models.Model):
             'goals': self.goals,
             'location': self.location,
             'email': self.user.email,
+            'phone_number': self.user.phone_number,
             'username': self.user.username,
             'image_profile': None if self.user.image_profile == '' else self.user.image_profile.url,
             'bio': self.user.bio,
@@ -305,6 +325,10 @@ class Classroom(models.Model):
     capacity = models.IntegerField(verbose_name='ظرفیت کلاس', null=False)
     users = models.ManyToManyField(UserProfile, verbose_name='افراد شرکت‌کننده')
     board = models.ForeignKey(verbose_name="هیئت برگزارکننده", to='Board', on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        verbose_name_plural = "کلاس‌ها"
+        verbose_name = "کلاس"
 
     def to_dict(self):
         return {
@@ -327,6 +351,10 @@ class BoardGame(models.Model):
     location = models.CharField(verbose_name='مکان برگزاری', null=False, max_length=100)
     board = models.ForeignKey(verbose_name="هیئت برگزارکننده", to='Board', on_delete=models.SET_NULL, null=True)
 
+    class Meta:
+        verbose_name_plural = "مسابقه‌های هیئت‌ها"
+        verbose_name = "مسابقه هیئت"
+
     def to_dict(self):
         return {
             'name': self.name,
@@ -343,6 +371,10 @@ class Message(models.Model):
     office_manager = models.ForeignKey(verbose_name="مدیر", to='OfficeAuthorities', on_delete=models.SET_NULL, null=True)
     message = models.TextField(verbose_name='متن پیام', null=False, max_length=3000)
     answered = models.BooleanField(verbose_name='پاسخ‌داده شده', default=False)
+
+    class Meta:
+        verbose_name_plural = "پیام‌ها"
+        verbose_name = "پیام"
 
     def to_dict(self):
         return {
