@@ -9,6 +9,7 @@ urlpatterns = [
     path('get_department_game/', get_department_game, name='get_department_game'),
     path('get_department_classroom/', get_department_classroom, name='get_department_classroom'),
     path('get_department_board/', get_department_board, name='get_department_board'),
+    path('add_element/', add_element, name='add_element'),
 
     path('signup/', signup, name='signup'),
     path('login/', login, name='login'),

@@ -500,3 +500,32 @@ def change_rate(request):
         except UserProfile.DoesNotExist:
             return Response({'message': 'چنین کاربری یافت نشد.'}, status=status.HTTP_401_UNAUTHORIZED)
     return Response({'message': 'درخواست اشتباه'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+@api_view(['POST'])
+def add_element(request):
+    if request.method == 'POST':
+        if request.data['type'] == 'news':
+            serializer = DepartmentNewsSerializer(data=request.data)
+            if serializer.is_valid():
+                if 'image' not in request.data or request.data['image'] is None:
+                    serializer.validated_data['image'] = None
+                serializer.save()
+                return Response(status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        if request.data['type'] == 'game':
+            serializer = BoardGameSerializer(data=request.data)
+            if serializer.is_valid():
+                if 'image' not in request.data or request.data['image'] is None:
+                    serializer.validated_data['image'] = None
+                serializer.save()
+                return Response(status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        if request.data['type'] == 'classroom':
+            serializer = ClassroomSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

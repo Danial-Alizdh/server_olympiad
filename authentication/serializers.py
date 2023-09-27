@@ -8,6 +8,18 @@ class DepartmentNewsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class BoardGameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BoardGame
+        fields = '__all__'
+
+
+class ClassroomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Classroom
+        fields = '__all__'
+
+
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
