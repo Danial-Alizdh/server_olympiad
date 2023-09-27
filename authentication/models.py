@@ -339,7 +339,7 @@ class Classroom(models.Model):
             'capacity': self.capacity,
             'board_email': self.board.user.email,
             'board_name': self.board.name,
-            'users': JoinedClass.objects.filter(classroom=self).all().count()
+            'users': JoinedClass.objects.filter(classroom=self, accepted=True).all().count()
         }
 
 

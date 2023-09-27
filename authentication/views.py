@@ -199,6 +199,10 @@ def profile(request):
                 data['auth'] = [c.to_dict() for c in BoardAuthorities.objects.filter(board=Board.objects.get(user=UserProfile.objects.get(email=data['email'])))]
             except UserProfile.DoesNotExist:
                 print('Nothing')
+            try:
+                data['classroom'] = [c.to_dict() for c in JoinedClass.objects.filter(classroom=Classroom.objects.get(board=Board.objects.get(user=user))).all()]
+            except UserProfile.DoesNotExist:
+                print('Nothing')
 
         return JsonResponse(data, safe=False, status=status.HTTP_200_OK)
     return Response({'message': 'درخواست اشتباه'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)

@@ -12,6 +12,7 @@ urlpatterns = [
     path('add_element/', add_element, name='add_element'),
     path('add_to_class/', add_to_class, name='add_to_class'),
     path('get_all_class/', get_all_class, name='get_all_class'),
+    path('accept_for_classroom/', accept_for_classroom, name='accept_for_classroom'),
     path('signup/', signup, name='signup'),
     path('login/', login, name='login'),
     path('logout/', logout, name='logout'),
