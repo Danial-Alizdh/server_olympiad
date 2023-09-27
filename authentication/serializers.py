@@ -20,6 +20,12 @@ class ClassroomSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class JoinedClassSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JoinedClass
+        fields = '__all__'
+
+
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile

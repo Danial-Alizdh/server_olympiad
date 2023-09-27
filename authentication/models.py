@@ -35,7 +35,7 @@ class DepartmentNews(models.Model):
 
 class UserProfile(models.Model):
     email = models.EmailField(verbose_name="آدرس ایمیل", primary_key=True, unique=True, null=False)
-    phone_number = models.IntegerField(verbose_name="شماره موبایل", unique=True, null=True)
+    phone_number = models.CharField(verbose_name="شماره موبایل", max_length=11, unique=True, null=True)
     username = models.CharField(verbose_name="نام کاربری", max_length=50, null=False, default='noName')
     password = models.CharField(max_length=16, null=False, editable=False)
     image_profile = models.ImageField(verbose_name="تصویر پروفایل", upload_to='profile_pics', null=True, blank=True)
@@ -284,7 +284,7 @@ class BoardAuthorities(models.Model):
 class Board(models.Model):
     user = models.OneToOneField(UserProfile, on_delete=models.CASCADE, verbose_name='ادمین هیئت')
     name = models.CharField(verbose_name='نام هیئت', max_length=50, null=False)
-    goals = models.CharField(verbose_name='اهداف', max_length=1500, null=True, blank=True)
+    goal = models.CharField(verbose_name='اهداف', max_length=1500, null=True, blank=True)
     location = models.CharField(verbose_name='آدرس', null=False, max_length=1000)
 
     class Meta:
@@ -300,7 +300,7 @@ class Board(models.Model):
     def to_dict(self):
         return {
             'name': self.name,
-            'goals': self.goals,
+            'goal': self.goal,
             'location': self.location,
             'email': self.user.email,
             'phone_number': self.user.phone_number,
@@ -321,7 +321,6 @@ class Classroom(models.Model):
     location = models.CharField(verbose_name='مکان برگزاری', null=False, max_length=100)
     link = models.CharField(verbose_name='لینک کلاس', null=False, max_length=1500)
     capacity = models.IntegerField(verbose_name='ظرفیت کلاس', null=False)
-    users = models.ManyToManyField(UserProfile, verbose_name='افراد شرکت‌کننده')
     board = models.ForeignKey(verbose_name="هیئت برگزارکننده", to='Board', on_delete=models.SET_NULL, null=True)
 
     class Meta:
@@ -338,6 +337,23 @@ class Classroom(models.Model):
             'capacity': self.capacity,
             'board_email': self.board.user.email,
             'board_name': self.board.name,
+            'users': JoinedClass.objects.filter(classroom=self).all().count()
+        }
+
+
+class JoinedClass(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(verbose_name="آدرس ایمیل کاربر", to='UserProfile', on_delete=models.SET_NULL, null=True)
+    classroom = models.ForeignKey(verbose_name="آدرس ایمیل هیئت کلاس", to='Classroom', on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        verbose_name_plural = "افراد و کلاس‌ها"
+        verbose_name = "فرد و کلاس"
+
+    def to_dict(self):
+        return {
+            'user_email': self.user.email,
+            'board_email': self.classroom.board.user.email,
         }
 
 

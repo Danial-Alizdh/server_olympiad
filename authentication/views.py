@@ -13,9 +13,6 @@ from django.contrib.auth.hashers import check_password
 def get_department_news(request):
     news = DepartmentNews.objects.all()
 
-    if news.count() == 0:
-        return JsonResponse({'message': 'خبری وجود ندارد'}, status=status.HTTP_200_OK)
-
     special_roles = ['office_admin', 'office_manager', 'office_expert', 'board_admin', 'board_authorities']
 
     flag = False
@@ -24,6 +21,10 @@ def get_department_news(request):
         user = UserProfile.objects.get(login_token=auth_header)
         if user and (user.email == ADMIN_EMAIL or user.role in special_roles):
             flag = True
+
+    if news.count() == 0:
+        return JsonResponse({'message': 'خبری وجود ندارد', 'addNews': flag}, status=status.HTTP_200_OK)
+
     response_data = {'news': [n.to_dict() for n in news], 'addNews': flag}
     return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
 
@@ -43,9 +44,6 @@ def get_department_office(request):
 def get_department_game(request):
     game = BoardGame.objects.all()
 
-    if game.count() == 0:
-        return JsonResponse({'message': 'بازی‌ای وجود ندارد'}, status=status.HTTP_200_OK)
-
     special_roles = ['board_admin', 'board_authorities']
 
     flag = False
@@ -54,6 +52,10 @@ def get_department_game(request):
         user = UserProfile.objects.get(login_token=auth_header)
         if user and (user.email == ADMIN_EMAIL or user.role in special_roles):
             flag = True
+
+    if game.count() == 0:
+        return JsonResponse({'message': 'بازی‌ای وجود ندارد', 'addGame': flag}, status=status.HTTP_200_OK)
+
     response_data = {'game': [n.to_dict() for n in game], 'addGame': flag}
     return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
 
@@ -62,9 +64,6 @@ def get_department_game(request):
 def get_department_classroom(request):
     classroom = Classroom.objects.all()
 
-    if classroom.count() == 0:
-        return JsonResponse({'message': 'کلاسی وجود ندارد'}, status=status.HTTP_200_OK)
-
     special_roles = ['board_admin', 'board_authorities']
 
     flag = False
@@ -73,6 +72,10 @@ def get_department_classroom(request):
         user = UserProfile.objects.get(login_token=auth_header)
         if user and (user.email == ADMIN_EMAIL or user.role in special_roles):
             flag = True
+
+    if classroom.count() == 0:
+        return JsonResponse({'message': 'کلاسی وجود ندارد', 'addClassroom': flag}, status=status.HTTP_200_OK)
+
     response_data = {'classroom': [n.to_dict() for n in classroom], 'addClassroom': flag}
     return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
 
@@ -519,6 +522,16 @@ def add_element(request):
             if serializer.is_valid():
                 if 'image' not in request.data or request.data['image'] is None:
                     serializer.validated_data['image'] = None
+
+                try:
+                    user = UserProfile.objects.get(login_token=request.data['login_token'])
+                    if user.role == 'board_admin':
+                        serializer.validated_data['board'] = Board.objects.get(user=user)
+                    elif user.role == 'board_authorities':
+                        serializer.validated_data['board'] = Board.objects.get(user=UserProfile.objects.get(email=BoardAuthorities.objects.get(user=user).to_dict()['board']['email']))
+                except UserProfile.DoesNotExist:
+                    return Response({'message': 'توکن شما معتبر نیست.'}, status=status.HTTP_401_UNAUTHORIZED)
+
                 serializer.save()
                 return Response(status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -526,6 +539,49 @@ def add_element(request):
         if request.data['type'] == 'classroom':
             serializer = ClassroomSerializer(data=request.data)
             if serializer.is_valid():
+
+                try:
+                    user = UserProfile.objects.get(login_token=request.data['login_token'])
+                    if user.role == 'board_admin':
+                        serializer.validated_data['board'] = Board.objects.get(user=user)
+                    elif user.role == 'board_authorities':
+                        serializer.validated_data['board'] = Board.objects.get(user=UserProfile.objects.get(
+                            email=BoardAuthorities.objects.get(user=user).to_dict()['board']['email']))
+                except UserProfile.DoesNotExist:
+                    return Response({'message': 'توکن شما معتبر نیست.'}, status=status.HTTP_401_UNAUTHORIZED)
+
                 serializer.save()
                 return Response(status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def add_to_class(request):
+    if request.method == 'POST':
+        try:
+            user = UserProfile.objects.get(login_token=request.data['login_token'])
+            try:
+                student, created = JoinedClass.objects.get_or_create(user=user, classroom=Classroom.objects.get(board=Board.objects.get(user=UserProfile.objects.get(email=request.data['board_email']))))
+                student.save()
+                return JsonResponse({'username': user.username}, safe=False, status=status.HTTP_200_OK)
+            except UserProfile.DoesNotExist:
+                return Response({}, status=status.HTTP_204_NO_CONTENT)
+        except UserProfile.DoesNotExist:
+            return Response({'message': 'توکن شما معتبر نیست.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+
+@api_view(['GET'])
+def get_all_class(request):
+    try:
+        join_class = JoinedClass.objects.filter(user=UserProfile.objects.get(login_token=request.META.get('HTTP_AUTHORIZATION', None))).all()
+
+        if join_class.count() == 0:
+            return Response({'message': 'کلاسی وجود ندارد'}, status=status.HTTP_204_NO_CONTENT)
+
+        response_data = {'data': [n.to_dict() for n in join_class]}
+        return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
+
+    except UserProfile.DoesNotExist:
+        return JsonResponse({}, status=status.HTTP_204_NO_CONTENT)
+
