@@ -6,7 +6,6 @@ djangorestframework
 djangorestframework-jsonapi
 django-spinproject
 django-simplestatic
-django-staticfiles
 django-cors-headers
 bcrypt
 uvicorn
