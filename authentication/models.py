@@ -5,6 +5,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 import uuid
 
 ADMIN_EMAIL = "AA@gmail.com"
+
+
 # ADMIN_PASSWORD = 'AA'
 
 
@@ -343,8 +345,19 @@ class Classroom(models.Model):
 
 class JoinedClass(models.Model):
     id = models.BigAutoField(primary_key=True)
+    full_name = models.CharField(verbose_name='نام کاربر', null=True, max_length=30)
+    national_code = models.CharField(verbose_name='کدملی', null=True, max_length=30)
+    passport_number = models.CharField(verbose_name='شماره شناسنامه', null=True, max_length=30)
+    father_name = models.CharField(verbose_name='نام پدر', null=True, max_length=30)
+    phone_number = models.CharField(verbose_name='شماره موبایل', null=True, max_length=30)
+    telephone_number = models.CharField(verbose_name='شماره ثابت', null=True, max_length=30)
+    location = models.CharField(verbose_name='آدرس', null=True, max_length=30)
+    location_code = models.CharField(verbose_name='کدپستی', null=True, max_length=30)
+    accepted = models.BooleanField(verbose_name='تایید شده', default=False)
+    rejected = models.BooleanField(verbose_name='رد شده', default=False)
     user = models.ForeignKey(verbose_name="آدرس ایمیل کاربر", to='UserProfile', on_delete=models.SET_NULL, null=True)
-    classroom = models.ForeignKey(verbose_name="آدرس ایمیل هیئت کلاس", to='Classroom', on_delete=models.SET_NULL, null=True)
+    classroom = models.ForeignKey(verbose_name="آدرس ایمیل هیئت کلاس", to='Classroom', on_delete=models.SET_NULL,
+                                  null=True)
 
     class Meta:
         verbose_name_plural = "افراد و کلاس‌ها"
@@ -352,6 +365,16 @@ class JoinedClass(models.Model):
 
     def to_dict(self):
         return {
+            'full_name': self.full_name,
+            'national_code': self.national_code,
+            'passport_number': self.passport_number,
+            'father_name': self.father_name,
+            'phone_number': self.phone_number,
+            'telephone_number': self.telephone_number,
+            'location': self.location,
+            'location_code': self.location_code,
+            'accepted': self.accepted,
+            'rejected': self.rejected,
             'user_email': self.user.email,
             'board_email': self.classroom.board.user.email,
         }
@@ -382,7 +405,8 @@ class BoardGame(models.Model):
 
 
 class Message(models.Model):
-    office_manager = models.ForeignKey(verbose_name="مدیر", to='OfficeAuthorities', on_delete=models.SET_NULL, null=True)
+    office_manager = models.ForeignKey(verbose_name="مدیر", to='OfficeAuthorities', on_delete=models.SET_NULL,
+                                       null=True)
     message = models.TextField(verbose_name='متن پیام', null=False, max_length=3000)
     answered = models.BooleanField(verbose_name='پاسخ‌داده شده', default=False)
 

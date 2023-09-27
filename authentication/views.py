@@ -562,13 +562,20 @@ def add_to_class(request):
             user = UserProfile.objects.get(login_token=request.data['login_token'])
             try:
                 student, created = JoinedClass.objects.get_or_create(user=user, classroom=Classroom.objects.get(board=Board.objects.get(user=UserProfile.objects.get(email=request.data['board_email']))))
+                student.full_name = request.data['full_name']
+                student.national_code = request.data['national_code']
+                student.passport_number = request.data['passport_number']
+                student.father_name = request.data['father_name']
+                student.phone_number = request.data['phone_number']
+                student.telephone_number = request.data['telephone_number']
+                student.location = request.data['location']
+                student.location_code = request.data['location_code']
                 student.save()
                 return JsonResponse({'username': user.username}, safe=False, status=status.HTTP_200_OK)
             except UserProfile.DoesNotExist:
                 return Response({}, status=status.HTTP_204_NO_CONTENT)
         except UserProfile.DoesNotExist:
             return Response({'message': 'توکن شما معتبر نیست.'}, status=status.HTTP_401_UNAUTHORIZED)
-
 
 
 @api_view(['GET'])
@@ -585,3 +592,25 @@ def get_all_class(request):
     except UserProfile.DoesNotExist:
         return JsonResponse({}, status=status.HTTP_204_NO_CONTENT)
 
+
+@api_view(['POST'])
+def accept_for_classroom(request):
+    if request.method == 'POST':
+        try:
+            user = UserProfile.objects.get(login_token=request.data['login_token'])
+            if user.email == ADMIN_EMAIL or user.role == 'board_admin' or user.role == 'board_authorities':
+                try:
+                    student = JoinedClass.objects.get(user=UserProfile.objects.get(email=request.data['email']))
+                except UserProfile.DoesNotExist:
+                    return JsonResponse({'message': 'کاربری با این آدرس ایمیل یافت نشد.'},
+                                        status=status.HTTP_404_NOT_FOUND)
+
+                accepted = False if request.data['accepted'] == 'false' else True
+                student.accepted = accepted
+                student.rejected = not accepted
+                student.save()
+
+                return JsonResponse({'message': 'ثبت نام کاربر تایید گردید'}, status=status.HTTP_200_OK)
+
+        except UserProfile.DoesNotExist:
+            return Response({'message': 'توکن شما معتبر نیست.'}, status=status.HTTP_401_UNAUTHORIZED)
