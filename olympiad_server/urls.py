@@ -4,6 +4,6 @@ from reviews.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('reviews.urls')),
+    path('api/', include('reviews.urls')),
     path('auth/', include('authentication.urls')),
 ]
