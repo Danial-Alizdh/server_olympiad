@@ -35,9 +35,7 @@ class DepartmentNews(models.Model):
 
 class UserProfile(models.Model):
     email = models.EmailField(verbose_name="آدرس ایمیل", primary_key=True, unique=True, null=False)
-    phone_number = models.IntegerField(verbose_name="شماره موبایل",
-                                       validators=[MinValueValidator(11), MaxValueValidator(11)], unique=True,
-                                       null=True)
+    phone_number = models.IntegerField(verbose_name="شماره موبایل", unique=True, null=True)
     username = models.CharField(verbose_name="نام کاربری", max_length=50, null=False, default='noName')
     password = models.CharField(max_length=16, null=False, editable=False)
     image_profile = models.ImageField(verbose_name="تصویر پروفایل", upload_to='profile_pics', null=True, blank=True)

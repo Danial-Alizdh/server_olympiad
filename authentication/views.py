@@ -174,13 +174,28 @@ def profile(request):
             data = Coach.objects.filter(user=user).first().to_dict()
         elif user.role == 'gym_manager':
             data = GymManager.objects.filter(user=user).first().to_dict()
-            data['coaches'] = [c.to_dict() for c in Coach.objects.filter(gym=GymManager.objects.get(user=UserProfile.objects.get(email=data['email'])))]
+            try:
+                data['coaches'] = [c.to_dict() for c in Coach.objects.filter(gym=GymManager.objects.get(user=UserProfile.objects.get(email=data['email'])))]
+            except UserProfile.DoesNotExist:
+                print('Nothing')
         elif user.role == 'actor':
             data = Actor.objects.filter(user=user).first().to_dict()
         elif user.role == 'office_admin':
             data = Office.objects.filter(user=user).first().to_dict()
+            try:
+                data['manager'] = [c.to_dict() for c in OfficeAuthorities.objects.filter(user=UserProfile.objects.get(role='office_manager'), office=Office.objects.get(user=UserProfile.objects.get(email=data['email'])))]
+            except UserProfile.DoesNotExist:
+                print('Nothin')
+            try:
+                data['expert'] = [c.to_dict() for c in OfficeAuthorities.objects.filter(user=UserProfile.objects.get(role='office_expert'), office=Office.objects.get(user=UserProfile.objects.get(email=data['email'])))]
+            except UserProfile.DoesNotExist:
+                print('Nothing')
         elif user.role == 'board_admin':
             data = Board.objects.filter(user=user).first().to_dict()
+            try:
+                data['auth'] = [c.to_dict() for c in BoardAuthorities.objects.filter(board=Board.objects.get(user=UserProfile.objects.get(email=data['email'])))]
+            except UserProfile.DoesNotExist:
+                print('Nothing')
 
         return JsonResponse(data, safe=False, status=status.HTTP_200_OK)
     return Response({'message': 'درخواست اشتباه'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -296,6 +311,11 @@ def update_profile(request):
             if 'location' in request.data:
                 office.location = request.data['location']
             office.save()
+        elif role == 'office_manager' or role == 'office_expert':
+            office_auth, created = OfficeAuthorities.objects.get_or_create(user=user)
+            if 'office' in request.data:
+                office_auth.office = Office.objects.filter(user=UserProfile.objects.filter(email=request.data['office']).first()).first()
+            office_auth.save()
         elif role == 'board_admin':
             board, created = Board.objects.get_or_create(user=user)
             if 'name' in request.data:
@@ -305,6 +325,11 @@ def update_profile(request):
             if 'location' in request.data:
                 board.location = request.data['location']
             board.save()
+        elif role == 'board_authorities':
+            board_auth, created = BoardAuthorities.objects.get_or_create(user=user)
+            if 'board' in request.data:
+                board_auth.board = Board.objects.filter(user=UserProfile.objects.filter(email=request.data['board']).first()).first()
+            board_auth.save()
 
         user.save()
         return JsonResponse({'username': user.username}, status=status.HTTP_200_OK)
@@ -324,7 +349,7 @@ def accept_role(request):
         except UserProfile.DoesNotExist:
             return Response({'message': 'توکن شما معتبر نیست.'}, status=status.HTTP_401_UNAUTHORIZED)
 
-        if user.email != ADMIN_EMAIL:
+        if user.email != ADMIN_EMAIL and user.role != 'office_admin' and user.role != 'board_admin':
             return JsonResponse({'message': 'تنها ادمین حق استفاده از این ویژگی را دارد.'}, status=status.HTTP_403_FORBIDDEN)
 
         try:
@@ -372,8 +397,12 @@ def get_users_by_role(request):
             data = Actor.objects.all()
         elif role == 'office_admin':
             data = Office.objects.all()
+        elif role == 'office_auth':
+            data = OfficeAuthorities.objects.all()
         elif role == 'board_admin':
             data = Board.objects.all()
+        elif role == 'board_auth':
+            data = BoardAuthorities.objects.all()
 
         if data is None or data.count() == 0:
             return JsonResponse({}, safe=False, status=status.HTTP_204_NO_CONTENT)
