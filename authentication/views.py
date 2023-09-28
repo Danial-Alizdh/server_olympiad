@@ -213,7 +213,7 @@ def main_page(request):
     if request.method == "POST":
         token = request.data['login_token']
         if not token or token == 'null':
-            return JsonResponse({'message': 'لطفا وارد حساب کاربری خود شوید'}, status=status.HTTP_401_UNAUTHORIZED)
+            return JsonResponse({'message': 'لطفا وارد حساب کاربری خود شوید'}, status=status.HTTP_404_NOT_FOUND)
 
         try:
             user = UserProfile.objects.get(login_token=token)
