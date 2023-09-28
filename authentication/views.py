@@ -26,7 +26,8 @@ def get_department_news(request):
         return JsonResponse({'message': 'خبری وجود ندارد', 'addNews': flag}, status=status.HTTP_200_OK)
 
     response_data = {'news': [n.to_dict() for n in news], 'addNews': flag}
-    return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
+    # return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
+    return JsonResponse({'message': 'تست ارور ۴۰۴'}, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(['GET'])
@@ -213,7 +214,7 @@ def main_page(request):
     if request.method == "POST":
         token = request.data['login_token']
         if not token or token == 'null':
-            return JsonResponse({'message': 'لطفا وارد حساب کاربری خود شوید'}, status=status.HTTP_404_NOT_FOUND)
+            return JsonResponse({'message': 'لطفا وارد حساب کاربری خود شوید'}, status=status.HTTP_401_UNAUTHORIZED)
 
         try:
             user = UserProfile.objects.get(login_token=token)
