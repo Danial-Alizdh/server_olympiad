@@ -18,18 +18,15 @@ def get_department_news(request):
 
     token = request.META.get('HTTP_AUTHORIZATION', None)
     if token and token != 'null':
-        auth_header = request.META.get('HTTP_AUTHORIZATION', None)
-        if auth_header:
-            user = UserProfile.objects.get(login_token=auth_header)
-            if user and (user.email == ADMIN_EMAIL or user.role in special_roles):
-                flag = True
+        user = UserProfile.objects.get(login_token=token)
+        if user and (user.email == ADMIN_EMAIL or user.role in special_roles):
+            flag = True
 
     if news.count() == 0:
         return JsonResponse({'message': 'خبری وجود ندارد', 'addNews': flag}, status=status.HTTP_200_OK)
 
     response_data = {'news': [n.to_dict() for n in news], 'addNews': flag}
-    # return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
-    return JsonResponse({'message': 'تست ارور ۴۰۴'}, status=status.HTTP_404_NOT_FOUND)
+    return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -52,11 +49,9 @@ def get_department_game(request):
 
     token = request.META.get('HTTP_AUTHORIZATION', None)
     if token and token != 'null':
-        auth_header = request.META.get('HTTP_AUTHORIZATION', None)
-        if auth_header:
-            user = UserProfile.objects.get(login_token=auth_header)
-            if user and (user.email == ADMIN_EMAIL or user.role in special_roles):
-                flag = True
+        user = UserProfile.objects.get(login_token=token)
+        if user and (user.email == ADMIN_EMAIL or user.role in special_roles):
+            flag = True
 
     if game.count() == 0:
         return JsonResponse({'message': 'بازی‌ای وجود ندارد', 'addGame': flag}, status=status.HTTP_200_OK)
@@ -70,11 +65,11 @@ def get_department_classroom(request):
     classroom = Classroom.objects.all()
 
     special_roles = ['board_admin', 'board_authorities']
-
     flag = False
-    auth_header = request.META.get('HTTP_AUTHORIZATION', None)
-    if auth_header:
-        user = UserProfile.objects.get(login_token=auth_header)
+
+    token = request.META.get('HTTP_AUTHORIZATION', None)
+    if token and token != 'null':
+        user = UserProfile.objects.get(login_token=token)
         if user and (user.email == ADMIN_EMAIL or user.role in special_roles):
             flag = True
 
