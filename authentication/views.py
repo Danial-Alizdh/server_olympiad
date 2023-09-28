@@ -14,13 +14,15 @@ def get_department_news(request):
     news = DepartmentNews.objects.all()
 
     special_roles = ['office_admin', 'office_manager', 'office_expert', 'board_admin', 'board_authorities']
-
     flag = False
-    auth_header = request.META.get('HTTP_AUTHORIZATION', None)
-    if auth_header:
-        user = UserProfile.objects.get(login_token=auth_header)
-        if user and (user.email == ADMIN_EMAIL or user.role in special_roles):
-            flag = True
+
+    token = request.META.get('HTTP_AUTHORIZATION', None)
+    if token and token != 'null':
+        auth_header = request.META.get('HTTP_AUTHORIZATION', None)
+        if auth_header:
+            user = UserProfile.objects.get(login_token=auth_header)
+            if user and (user.email == ADMIN_EMAIL or user.role in special_roles):
+                flag = True
 
     if news.count() == 0:
         return JsonResponse({'message': 'خبری وجود ندارد', 'addNews': flag}, status=status.HTTP_200_OK)
@@ -46,13 +48,15 @@ def get_department_game(request):
     game = BoardGame.objects.all()
 
     special_roles = ['board_admin', 'board_authorities']
-
     flag = False
-    auth_header = request.META.get('HTTP_AUTHORIZATION', None)
-    if auth_header:
-        user = UserProfile.objects.get(login_token=auth_header)
-        if user and (user.email == ADMIN_EMAIL or user.role in special_roles):
-            flag = True
+
+    token = request.META.get('HTTP_AUTHORIZATION', None)
+    if token and token != 'null':
+        auth_header = request.META.get('HTTP_AUTHORIZATION', None)
+        if auth_header:
+            user = UserProfile.objects.get(login_token=auth_header)
+            if user and (user.email == ADMIN_EMAIL or user.role in special_roles):
+                flag = True
 
     if game.count() == 0:
         return JsonResponse({'message': 'بازی‌ای وجود ندارد', 'addGame': flag}, status=status.HTTP_200_OK)
