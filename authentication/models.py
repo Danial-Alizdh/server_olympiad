@@ -117,6 +117,9 @@ class Coach(models.Model):
         verbose_name_plural = "مربی‌ها"
         verbose_name = "مربی"
 
+    def __str__(self):
+        return self.user.email
+
     def to_dict(self):
         return {
             'email': self.user.email,
@@ -131,7 +134,7 @@ class Coach(models.Model):
             'rate': self.user.rate,
             'education': self.education,
             'field': self.field,
-            'gym': self.gym.for_coach(),
+            'gym': self.gym.user.email,
         }
 
 
@@ -148,6 +151,9 @@ class GymManager(models.Model):
     class Meta:
         verbose_name_plural = "سالن‌دارها"
         verbose_name = "سالن‌دار"
+
+    def __str__(self):
+        return self.user.email
 
     def to_dict(self):
         return {
@@ -190,6 +196,9 @@ class Actor(models.Model):
         verbose_name_plural = "قهرمان‌ها"
         verbose_name = "قهرمان"
 
+    def __str__(self):
+        return self.user.email
+
     def to_dict(self):
         return {
             'email': self.user.email,
@@ -214,6 +223,9 @@ class OfficeAuthorities(models.Model):
         verbose_name_plural = "کارمندان اداره‌ها"
         verbose_name = "کارمند اداره"
 
+    def __str__(self):
+        return self.user.email
+
     def to_dict(self):
         return {
             'board': self.office.for_auth(),
@@ -237,6 +249,9 @@ class Office(models.Model):
     class Meta:
         verbose_name_plural = "اداره‌ها"
         verbose_name = "اداره"
+
+    def __str__(self):
+        return self.user.email
 
     def for_auth(self):
         return {
@@ -268,6 +283,9 @@ class BoardAuthorities(models.Model):
         verbose_name_plural = "کارشناس‌های هیئت‌ها"
         verbose_name = "کارشناس اداره"
 
+    def __str__(self):
+        return self.user.email
+
     def to_dict(self):
         return {
             'board': self.board.for_auth(),
@@ -292,6 +310,9 @@ class Board(models.Model):
     class Meta:
         verbose_name_plural = "هیئت‌ها"
         verbose_name = "هیئت"
+
+    def __str__(self):
+        return self.user.email
 
     def for_auth(self):
         return {
@@ -329,6 +350,9 @@ class Classroom(models.Model):
         verbose_name_plural = "کلاس‌ها"
         verbose_name = "کلاس"
 
+    def __str__(self):
+        return self.name
+
     def to_dict(self):
         return {
             'name': self.name,
@@ -363,6 +387,9 @@ class JoinedClass(models.Model):
         verbose_name_plural = "افراد و کلاس‌ها"
         verbose_name = "فرد و کلاس"
 
+    def __str__(self):
+        return str(self.user.email + ' _ ' + self.classroom.board.user.email)
+
     def to_dict(self):
         return {
             'full_name': self.full_name,
@@ -391,6 +418,9 @@ class BoardGame(models.Model):
     class Meta:
         verbose_name_plural = "مسابقه‌های هیئت‌ها"
         verbose_name = "مسابقه هیئت"
+
+    def __str__(self):
+        return self.name
 
     def to_dict(self):
         return {
