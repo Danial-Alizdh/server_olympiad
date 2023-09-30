@@ -7,7 +7,7 @@ djangorestframework-jsonapi
 django-spinproject
 django-simplestatic
 django-cors-headers
-django-admin-tools
+whitenoise
 bcrypt
 uvicorn
 gunicorn
