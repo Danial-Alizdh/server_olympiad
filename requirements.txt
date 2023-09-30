@@ -7,6 +7,9 @@ djangorestframework-jsonapi
 django-spinproject
 django-simplestatic
 django-cors-headers
+django-suit
+django-grappelli
+adminlte-django
 bcrypt
 uvicorn
 gunicorn
